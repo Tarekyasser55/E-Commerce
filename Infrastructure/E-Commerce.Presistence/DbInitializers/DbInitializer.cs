@@ -38,8 +38,12 @@ internal class DbInitializer(AplicationDbContext appDbContext) : IDbInitializer
 
             if (!appDbContext.productType.Any())
             {
-                var TypesDate = await File.ReadAllTextAsync(@"..\Infrastructure\E-Commerce.Presistence\Context\DataSeed\brands.json");
-                var Types = JsonSerializer.Deserialize<List<productType>>(TypesDate);
+                var TypesDate = await File.ReadAllTextAsync(@"..\Infrastructure\E-Commerce.Presistence\Context\DataSeed\Types.json");
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var Types = JsonSerializer.Deserialize<List<productType>>(TypesDate,options);
                 if (Types != null && Types.Any())
                 {
                     appDbContext.productType.AddRange(Types);
@@ -50,10 +54,14 @@ internal class DbInitializer(AplicationDbContext appDbContext) : IDbInitializer
             if (!appDbContext.products.Any())
             {
                 var productsDate = await File.ReadAllTextAsync(@"..\Infrastructure\E-Commerce.Presistence\Context\DataSeed\products.json");
-                var products = JsonSerializer.Deserialize<List<productType>>(productsDate);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var products = JsonSerializer.Deserialize<List<product>>(productsDate,options);
                 if (products != null && products.Any())
                 {
-                    appDbContext.productType.AddRange(products);
+                    appDbContext.products.AddRange(products);
                 }
                 await appDbContext.SaveChangesAsync();
             }
